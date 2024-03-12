@@ -113,6 +113,13 @@ function App() {
         `http://localhost:8800/league/${league}/${season}`
       );
       const data = await response.json();
+
+      if (data === null || data.length === 0) {
+        console.error("No data found for the selected league and season.");
+        // You can also show a user-friendly error message
+        return;
+      }
+
       console.log("League information:", data);
 
       // Update the state with the fetched data
