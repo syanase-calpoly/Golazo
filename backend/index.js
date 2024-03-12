@@ -9,7 +9,7 @@ const app = express();
 app.use(cors());
 
 const db = mysql.createConnection({
-  host: "127.0.01",
+  host: "localhost",
   user: "root",
   password: "golazo.MESSI21",
   database: "soccer",
