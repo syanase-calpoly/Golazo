@@ -16,18 +16,34 @@ function TeamDetailsPage({ season }) {
           `http://localhost:8800/team/${teamName}/${selectedSeason}`
         );
         const teamDetails = await teamResponse.json();
+        if (teamDetails === null || teamDetails.length === 0) {
+          console.error("No match stats found for the selected team and season.");
+          // You can also show a user-friendly error message
+          return;
+        }
         setTeamDetails(teamDetails);
 
         const playerResponse = await fetch(
           `http://localhost:8800/team/players/${teamName}/${selectedSeason}`
         );
         const playerDetails = await playerResponse.json();
+        if (playerDetails === null || playerDetails.length === 0) {
+          console.error("No players found for the selected team and season.");
+          // You can also show a user-friendly error message
+          return;
+        }
+
         setPlayerDetails(playerDetails);
 
         const managerResponse = await fetch(
           `http://localhost:8800/team/managers/${teamName}/${selectedSeason}`
         );
         const managerDetails = await managerResponse.json();
+        if (managerDetails === null || managerDetails.length === 0) {
+          console.error("No managers found for the selected team and season.");
+          // You can also show a user-friendly error message
+          return;
+        }
         setManagerDetails(managerDetails);
       } catch (error) {
         console.error("Error fetching details:", error);
