@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Link } from "react-router-dom";
 import "./App.css";
 import TeamDetailsPage from "./TeamDetailsPage";
 
-// Create a new component for the main page content
-const MainPage = ({ season, league, handleSelect1, handleSelect2, handleContinue, leagueInfo }) => (
+const MainPage = ({ season, league, handleSelect1, handleSelect2, handleContinue, leagueInfo, error }) => (
   <div className="App" style={{ textAlign: "center", margin: "20px" }}>
     <div style={{ marginBottom: "20px" }}>
       <h1>Soccer Database</h1>
@@ -53,6 +52,12 @@ const MainPage = ({ season, league, handleSelect1, handleSelect2, handleContinue
       Continue
     </button>
 
+    {error && (
+      <div style={{ marginTop: "20px", color: "red" }}>
+        {error}
+      </div>
+    )}
+
     {leagueInfo && !leagueInfo.teamDetails && (
       <div style={{ marginTop: "20px" }}>
         <h2>League Information</h2>
@@ -91,6 +96,7 @@ function App() {
   const [season, setSelectedItem1] = useState(null);
   const [league, setSelectedItem2] = useState(null);
   const [leagueInfo, setLeagueInfo] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleSelect1 = (item) => {
     setSelectedItem1(item);
@@ -101,10 +107,8 @@ function App() {
   };
 
   const handleContinue = async () => {
-    // Make a request to the backend to get information about the selected league
     if (!season || !league) {
-      console.error("Please select both season and league.");
-      // You can also show a user-friendly error message
+      setError("Please select both season and league.");
       return;
     }
 
@@ -115,30 +119,26 @@ function App() {
       const data = await response.json();
 
       if (data === null || data.length === 0) {
-        console.error("No data found for the selected league and season.");
-        // You can also show a user-friendly error message
+        setError("No data found for the selected league and season.");
         return;
       }
 
       console.log("League information:", data);
-
-      // Update the state with the fetched data
       setLeagueInfo(data);
+      setError(null);
     } catch (error) {
-      console.error("Error fetching league information:", error);
+      setError("Error fetching league information: " + error.message);
     }
   };
 
   return (
     <Router>
       <Routes>
-        {/* Route for the main page */}
         <Route
           path="/"
-          element={<MainPage season={season} league={league} handleSelect1={handleSelect1} handleSelect2={handleSelect2} handleContinue={handleContinue} leagueInfo={leagueInfo} />}
+          element={<MainPage season={season} league={league} handleSelect1={handleSelect1} handleSelect2={handleSelect2} handleContinue={handleContinue} leagueInfo={leagueInfo} error={error} />}
         />
 
-        {/* Route for the team details page */}
         <Route
           path="/team/:teamName"
           element={<TeamDetailsPage season={season} />}

@@ -1,4 +1,3 @@
-// TeamDetailsPage.jsx
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
@@ -8,17 +7,19 @@ function TeamDetailsPage({ season }) {
   const [playerDetails, setPlayerDetails] = useState(null);
   const [managerDetails, setManagerDetails] = useState(null);
   const [selectedSeason, setSelectedSeason] = useState(season);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchTeamDetails = async () => {
       try {
+        setError(null); // Reset error state
+
         const teamResponse = await fetch(
           `http://localhost:8800/team/${teamName}/${selectedSeason}`
         );
         const teamDetails = await teamResponse.json();
         if (teamDetails === null || teamDetails.length === 0) {
-          console.error("No match stats found for the selected team and season.");
-          // You can also show a user-friendly error message
+          setError("No match stats found for the selected team and season.");
           return;
         }
         setTeamDetails(teamDetails);
@@ -28,8 +29,7 @@ function TeamDetailsPage({ season }) {
         );
         const playerDetails = await playerResponse.json();
         if (playerDetails === null || playerDetails.length === 0) {
-          console.error("No players found for the selected team and season.");
-          // You can also show a user-friendly error message
+          setError("No players found for the selected team and season.");
           return;
         }
 
@@ -40,13 +40,12 @@ function TeamDetailsPage({ season }) {
         );
         const managerDetails = await managerResponse.json();
         if (managerDetails === null || managerDetails.length === 0) {
-          console.error("No managers found for the selected team and season.");
-          // You can also show a user-friendly error message
+          setError("No managers found for the selected team and season.");
           return;
         }
         setManagerDetails(managerDetails);
       } catch (error) {
-        console.error("Error fetching details:", error);
+        setError("Error fetching details: " + error.message);
       }
     };
 
@@ -74,11 +73,13 @@ function TeamDetailsPage({ season }) {
           <option value="2020-2021">2020-2021</option>
         </select>
       </div>
+      
+      {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
+      
       <h3>Match Details</h3>
       
       {teamDetails && (
         <div className="table-container">
-          
           <table>
             <thead>
               <tr>
@@ -99,8 +100,8 @@ function TeamDetailsPage({ season }) {
           </table>
         </div>
       )}
-      <h3 >Players Details</h3>
-
+      <h3>Players Details</h3>
+      
       {playerDetails && (
         <div className="table-container">
           <table>
@@ -124,7 +125,7 @@ function TeamDetailsPage({ season }) {
         </div>
       )}
 
-      <h3 >Manager Details</h3>
+      <h3>Manager Details</h3>
 
       {managerDetails && (
         <div className="table-container">
