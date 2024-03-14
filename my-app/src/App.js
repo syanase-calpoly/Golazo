@@ -110,20 +110,22 @@ function App() {
   const handleContinue = async () => {
     if (!season || !league) {
       setError("Please select both season and league.");
+      setLeagueInfo(null); 
       return;
     }
-
+  
     try {
       const response = await fetch(
         `http://localhost:8800/league/${league}/${season}`
       );
       const data = await response.json();
-
+  
       if (data === null || data.length === 0) {
         setError("No data found for the selected league and season.");
+        setLeagueInfo(null); // Clear league information
         return;
       }
-
+  
       console.log("League information:", data);
       setLeagueInfo(data);
       setError(null);

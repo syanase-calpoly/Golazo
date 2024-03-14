@@ -14,12 +14,24 @@ function TeamDetailsPage({ season }) {
       try {
         setError(null); // Reset error state
 
+        // Check if a season is selected
+        if (!selectedSeason) {
+          setError("Please select a season.");
+          setTeamDetails(null); // Clear team details
+          setPlayerDetails(null); // Clear player details
+          setManagerDetails(null); // Clear manager details
+          return;
+        }
+
         const teamResponse = await fetch(
           `http://localhost:8800/team/${teamName}/${selectedSeason}`
         );
         const teamDetails = await teamResponse.json();
         if (teamDetails === null || teamDetails.length === 0) {
           setError("No match stats found for the selected team and season.");
+          setTeamDetails(null); // Clear team details
+          setPlayerDetails(null); // Clear player details
+          setManagerDetails(null); // Clear manager details
           return;
         }
         setTeamDetails(teamDetails);
@@ -30,6 +42,9 @@ function TeamDetailsPage({ season }) {
         const playerDetails = await playerResponse.json();
         if (playerDetails === null || playerDetails.length === 0) {
           setError("No players found for the selected team and season.");
+          setTeamDetails(null); // Clear team details
+          setPlayerDetails(null); // Clear player details
+          setManagerDetails(null); // Clear manager details
           return;
         }
 
@@ -41,6 +56,9 @@ function TeamDetailsPage({ season }) {
         const managerDetails = await managerResponse.json();
         if (managerDetails === null || managerDetails.length === 0) {
           setError("No managers found for the selected team and season.");
+          setTeamDetails(null); // Clear team details
+          setPlayerDetails(null); // Clear player details
+          setManagerDetails(null); // Clear manager details
           return;
         }
         setManagerDetails(managerDetails);
@@ -54,6 +72,7 @@ function TeamDetailsPage({ season }) {
 
   const handleSelectSeason = (selectedSeason) => {
     setSelectedSeason(selectedSeason);
+    setError(null); // Reset error message when a new season is selected
   };
 
   return (
@@ -73,11 +92,11 @@ function TeamDetailsPage({ season }) {
           <option value="2019-2020">2019-2020</option>
         </select>
       </div>
-      
+
       {error && <div style={{ color: "red", marginBottom: "20px" }}>{error}</div>}
-      
+
       <h3>Match Details</h3>
-      
+
       {teamDetails && (
         <div className="table-container">
           <table>
@@ -101,7 +120,7 @@ function TeamDetailsPage({ season }) {
         </div>
       )}
       <h3>Players Details</h3>
-      
+
       {playerDetails && (
         <div className="table-container">
           <table>
