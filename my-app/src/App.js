@@ -30,8 +30,6 @@ const MainPage = ({ season, league, handleSelect1, handleSelect2, handleContinue
         style={{ padding: "5px" }}
       >
         <option value="">Select</option>
-        <option value="Ligue 1">Ligue 1</option>
-        <option value="Bundesliga">Bundesliga</option>
         <option value="La Liga">La Liga</option>
         <option value="Premier League">Premier League</option>
         <option value="Serie A">Serie A</option>
